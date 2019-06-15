@@ -11,7 +11,7 @@
     @focus="!isAriaDisabled && handleFocus()"
     @blur="!isAriaDisabled && handleBlur()"
   >
-    <div class="label">{{ radioLabel }}</div>
+    <div v-if="label" class="label">{{ radioLabel }}</div>
   </div>
 </template>
 
@@ -123,7 +123,9 @@ export default {
       }
     },
     handleClick: function() {
-      this.$parent.setChecked(this);
+      if (this.$parent.setChecked) {
+        this.$parent.setChecked(this);
+      }
     }
   }
 };

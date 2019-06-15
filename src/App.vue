@@ -2,6 +2,7 @@
   <div id="app">
     <img alt="Vue logo" src="./assets/logo.png">
     <div class="test">
+      <Radio position="aboveLabel" value="r4" label="Regular crust"></Radio>
       <h1>Radio Input</h1>
       <RadioGroup v-model="radioVal" :checkedIndex="3">
         <Radio position="afterLabel" value="r0" label="Regular crust" :disabled="true"></Radio>

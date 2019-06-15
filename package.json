@@ -81,6 +81,13 @@
     "watchPlugins": [
       "jest-watch-typeahead/filename",
       "jest-watch-typeahead/testname"
+    ],
+    "coverageDirectory": "./coverage/",
+    "collectCoverage": false,
+    "collectCoverageFrom": [
+      "src/**/*.{js,vue}",
+      "!src/main.js",
+      "!**/node_modules/**"
     ]
   }
 }
