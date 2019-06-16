@@ -44,11 +44,11 @@ export default {
   },
   data: function() {
     return {
-      currentRadioIndex: this.checkedIndex ? this.checkedIndex : -1,
+      currentRadioIndex: this.checkedIndex >= 0 ? this.checkedIndex : -1,
+      currentRadioValue: null,
       totalRadios: 0,
       radioLabelId: this.labelId,
-      radioLabelText: this.labelText,
-      currentRadioValue: null
+      radioLabelText: this.labelText
     };
   },
   methods: {
@@ -83,7 +83,7 @@ export default {
       });
 
     // set value of radiogroup to default checked radio value
-    if (this.checkedIndex) {
+    if (this.checkedIndex >= 0) {
       this.currentRadioValue = this.$children[this.checkedIndex].value;
       this.handleInput();
     }

@@ -5,7 +5,7 @@
       <h1>Radio Input</h1>
       <RadioGroup
         v-model="radioVal"
-        :checkedIndex="2"
+        :checkedIndex="-1"
         :labelId="radioGroupLabel.id"
         :labelText="radioGroupLabel.text"
         :radios="radioInputAry"

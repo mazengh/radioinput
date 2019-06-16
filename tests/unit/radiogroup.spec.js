@@ -1,37 +1,80 @@
-import { shallowMount } from "@vue/test-utils";
+import { mount } from "@vue/test-utils";
 import RadioGroup from "@/components/RadioGroup.vue";
 
 function createTestProps(props) {
   return {
-    v-model="radioVal"
-        :checkedIndex="3"
-        :labelId="radioGroupLabel.id"
-        :labelText="radioGroupLabel.text"
-        :radios="radioInputAry"
-      apiId: '6e770272-212b-404e-ab9c-333fdba02f2f',
-      cancelButton: true,
-      allComments: [],
-      theme: { custom: { maxCommentLength: 1300 } },
-      ...props,
+    checkedIndex: 2,
+    labelId: "group_label",
+    labelText: "Select Burger",
+    radios: [
+      {
+        value: "r1",
+        label: "Regular Burger"
+      },
+      {
+        value: "r2",
+        label: "Cheese Burger"
+      },
+      {
+        value: "r3",
+        label: "Chicken Burger"
+      },
+      {
+        value: "r4",
+        label: "Mushroom Burger"
+      }
+    ],
+    ...props
   };
 }
+
 let wrapper, props;
-beforeEach(() => {
-  props = createTestProps();
-  wrapper = shallow(<Comment {...props} /> );
-});
 
+describe("RadioGroup.vue rendering", () => {
+  // test rendering with default(checkedIndex) set
+  it("will render a radio group with 4 radios with default checked", () => {
+    let radioVal = null;
+    props = {
+      ...createTestProps({ vModel: radioVal })
+    };
 
-describe("RadioGroup.vue", () => {
-  // test that a warning us generated when no value is passed as a prop
-  it("will generate a warning when the value prop is not passed", () => {
-    const spy = jest
-      .spyOn(global.console, "error")
-      .mockImplementation(() => {});
-    shallowMount(Radio);
+    wrapper = mount(RadioGroup, {
+      propsData: {
+        ...props
+      }
+    });
 
-    expect(spy).toBeCalled();
-    expect(spy.mock.calls[0][0]).toContain("[Vue warn]: Missing required prop");
-    spy.mockRestore();
+    // rendered element should have role="radiogroup" attribute
+    expect(wrapper.find('[role="radiogroup"]').is('[role="radiogroup"]')).toBe(
+      true
+    );
+
+    // rendered element should have aria-labelledby attribute set to the label id
+    expect(wrapper.attributes("aria-labelledby")).toBe(props.labelId);
+
+    // number of rendered radios should match radios data array length
+    expect(wrapper.findAll('[role="radio"]').length).toEqual(4);
+
+    // value of radiogroup should be the value of the default checked radio
+    expect(wrapper.vm.currentRadioValue).toEqual(
+      props.radios[props.checkedIndex].value
+    );
+  });
+
+  // test rendering with no default(checkedIndex) set
+  it("will render a radio group with 4 radios with none being checked", () => {
+    let radioVal = null;
+    props = {
+      ...createTestProps({ vModel: radioVal, checkedIndex: -1 })
+    };
+
+    wrapper = mount(RadioGroup, {
+      propsData: {
+        ...props
+      }
+    });
+
+    // value of radiogroup should be null as no radio is checked
+    expect(wrapper.vm.currentRadioValue).toBeNull();
   });
 });

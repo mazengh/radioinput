@@ -97,12 +97,6 @@ export default {
     setRadioIndex: function(index) {
       this.radioIndex = index;
     },
-    setRadioTabIndex: function(index) {
-      this.radioTabIndex = index;
-    },
-    setAriaChecked: function(isChecked) {
-      this.isAriaChecked = isChecked;
-    },
     handleFocus: function() {
       if (!this.classList.includes("focus")) {
         this.radioFocus = true;
