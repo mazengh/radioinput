@@ -1,13 +1,25 @@
 <template>
-  <div role="radiogroup" aria-labelledby="group_label_1" @click="handleInput">
-    <h3 id="group_label_1">Pizza Crust</h3>
-    <slot></slot>
+  <div role="radiogroup" :aria-labelledby="radioLabelId" @click="handleInput">
+    <h3 :id="radioLabelId">{{radioLabelText}}</h3>
+    <Radio
+      v-for="(radio, index) in radios"
+      v-bind="radio"
+      :key="`radio_${index}`"
+      :checked="currentRadioIndex"
+      @check="setChecked"
+      @previous="setCheckedToPreviousItem"
+      @next="setCheckedToNextItem"
+    />
   </div>
 </template>
 
 <script>
+import Radio from "./Radio.vue";
+
 export default {
   props: {
+    labelId: String,
+    labelText: String,
     value: {
       type: null
     },
@@ -17,6 +29,9 @@ export default {
       validator: function(value) {
         return value >= -1;
       }
+    },
+    radios: {
+      type: Array
     }
   },
   model: {
@@ -24,96 +39,59 @@ export default {
     event: "click"
   },
   name: "RadioGroup",
+  components: {
+    Radio
+  },
   data: function() {
     return {
-      radioButtons: [],
-      //firstButton: null,
-      //lastButton: null,
-      currentRadioIndex: 0, //this.checkedIndex > -1 ? this.checkedIndex : 0,
-      initialCheckedRadio: this.checkedIndex,
+      currentRadioIndex: this.checkedIndex ? this.checkedIndex : -1,
+      totalRadios: 0,
+      radioLabelId: this.labelId,
+      radioLabelText: this.labelText,
       currentRadioValue: null
     };
   },
-  // computed: {
-  //   currentRadioValue: function() {
-  //     return this.radioButtons.length && this.initialCheckedRadio > -1
-  //       ? this.radioButtons[this.currentRadioIndex].value
-  //       : "";
-  //   }
-  //},
   methods: {
-    setChecked: function(currentRadio = null) {
-      if (!currentRadio) {
-        currentRadio = this.radioButtons[this.currentRadioIndex];
-      } else {
-        // set the current radio index to the passed param
-        this.currentRadioIndex = this.radioButtons.indexOf(currentRadio);
-      }
-
-      // rest attributes on all radios in group
-      this.radioButtons.forEach(radioBtn => {
-        radioBtn.setAriaChecked(false);
-        radioBtn.setRadioTabIndex("-1");
-      });
-
-      this.currentRadioValue = this.radioButtons[this.currentRadioIndex].value;
-      currentRadio.setAriaChecked(true);
-      currentRadio.setRadioTabIndex("0");
-      currentRadio.$el.focus();
+    setChecked: function(payload) {
+      this.currentRadioIndex = payload.index;
+      this.currentRadioValue = payload.value;
       this.handleInput();
     },
     setCheckedToPreviousItem: function() {
-      // if (this.currentRadioIndex === 0) {
-      //   this.currentRadioIndex = this.radioButtons.length - 1;
-      // } else {
-      //   this.currentRadioIndex = this.currentRadioIndex - 1;
-      // }
-
-      const radioCount = this.radioButtons.length;
-      this.currentRadioIndex =
-        Math.floor((radioCount - this.currentRadioIndex) / radioCount) *
-          radioCount +
-        this.currentRadioIndex -
-        1;
-
-      this.setChecked();
+      if (this.currentRadioIndex <= 0) {
+        this.currentRadioIndex = this.totalRadios - 1;
+      } else {
+        this.currentRadioIndex -= 1;
+      }
     },
     setCheckedToNextItem: function() {
-      this.currentRadioIndex =
-        (this.currentRadioIndex + 1) % this.radioButtons.length;
+      const startIndex =
+        this.currentRadioIndex === -1 ? 0 : this.currentRadioIndex;
 
-      this.setChecked();
-    },
-    isCurrentRadioActive: function() {
-      this.radioButtons.length
-        ? this.radioButtons[this.currentRadioIndex].value
-        : "";
+      this.currentRadioIndex = (startIndex + 1) % this.totalRadios;
     },
     handleInput: function() {
       this.$emit("click", this.currentRadioValue);
     }
   },
   mounted() {
-    this.radioButtons = this.$children.filter(
+    // get all non disabled radios and set the index for each
+    this.$children
+      .filter(radioBtn => !radioBtn.isAriaDisabled)
+      .forEach((radioBtn, index) => {
+        radioBtn.setRadioIndex(index);
+      });
+
+    // set value of radiogroup to default checked radio value
+    if (this.checkedIndex) {
+      this.currentRadioValue = this.$children[this.checkedIndex].value;
+      this.handleInput();
+    }
+
+    // set the total number of radios in group
+    this.totalRadios = this.$children.filter(
       radioBtn => !radioBtn.isAriaDisabled
-    );
-
-    //const currentRadio = this.radioButtons[this.currentRadioIndex];
-    if (this.initialCheckedRadio >= 0) {
-      this.currentRadioIndex = this.initialCheckedRadio;
-      this.setChecked();
-
-      // reset the initial check so that it only runs once at first
-      this.initialCheckedRadio = -1;
-    }
-
-    // set tabindex to 0 for the first radio in the group
-    else if (this.radioButtons.length) {
-      this.radioButtons[this.currentRadioIndex].setRadioTabIndex("0");
-      // this.currentRadioIndex !== -1
-      //   ? this.radioButtons[this.currentRadioIndex].setRadioTabIndex("0")
-      //   : this.radioButtons[0].setRadioTabIndex("0");
-    }
+    ).length;
   }
 };
 </script>

@@ -1,4 +1,4 @@
-<template>
+<template slot-scope="slotProps">
   <div
     role="radio"
     :aria-checked="radioAriaChecked"
@@ -19,6 +19,9 @@
 export default {
   name: "Radio",
   props: {
+    checked: {
+      type: Number
+    },
     // position of radio input relative to it's label
     position: {
       type: String,
@@ -44,10 +47,9 @@ export default {
   },
   data: function() {
     return {
+      radioIndex: null,
       radioLabel: this.label,
-      isAriaChecked: false,
       isAriaDisabled: this.disabled,
-      radioTabIndex: "-1",
       radioFocus: false,
       keyCode: Object.freeze({
         RETURN: 13,
@@ -72,11 +74,28 @@ export default {
     },
     radioAriaLabel: function() {
       return !this.label ? this.value : null;
+    },
+    isAriaChecked: function() {
+      return this.radioIndex === this.checked;
+    },
+    radioTabIndex: function() {
+      return this.radioIndex === this.checked ||
+        (this.checked === -1 && this.radioIndex === 0)
+        ? "0"
+        : "-1";
+    }
+  },
+  watch: {
+    checked: function() {
+      if (this.radioIndex === this.checked) {
+        this.$el.focus();
+        this.$emit("check", { index: this.radioIndex, value: this.value });
+      }
     }
   },
   methods: {
-    setValue: function() {
-      this.isAriaChecked = !this.isAriaChecked;
+    setRadioIndex: function(index) {
+      this.radioIndex = index;
     },
     setRadioTabIndex: function(index) {
       this.radioTabIndex = index;
@@ -100,17 +119,19 @@ export default {
       switch (event.keyCode) {
         case this.keyCode.SPACE:
         case this.keyCode.RETURN:
-          this.$parent.setChecked();
+          this.$emit("check", { index: this.radioIndex, value: this.value });
           flag = true;
           break;
         case this.keyCode.UP:
         case this.keyCode.LEFT:
-          this.$parent.setCheckedToPreviousItem();
+          this.$emit("previous");
+          this.$el.blur();
           flag = true;
           break;
         case this.keyCode.DOWN:
         case this.keyCode.RIGHT:
-          this.$parent.setCheckedToNextItem();
+          this.$el.blur();
+          this.$emit("next");
           flag = true;
           break;
         default:
@@ -123,9 +144,10 @@ export default {
       }
     },
     handleClick: function() {
-      if (this.$parent.setChecked) {
-        this.$parent.setChecked(this);
-      }
+      this.$emit("check", {
+        index: this.radioIndex,
+        value: this.value
+      });
     }
   }
 };

@@ -2,36 +2,61 @@
   <div id="app">
     <img alt="Vue logo" src="./assets/logo.png">
     <div class="test">
-      <Radio position="aboveLabel" value="r4" label="Regular crust"></Radio>
       <h1>Radio Input</h1>
-      <RadioGroup v-model="radioVal" :checkedIndex="3">
-        <Radio position="afterLabel" value="r0" label="Regular crust" :disabled="true"></Radio>
-        <Radio position="afterLabel" value="r1" label="Deep dish"></Radio>
-        <br>
-        <Radio position="beforeLabel" value="r2" label="Regular crust"></Radio>
-        <Radio position="beforeLabel" value="r3" label="Deep dish"></Radio>
-        <br>
-        <Radio position="aboveLabel" value="r4" label="Regular crust"></Radio>
-        <br>
-        <Radio position="belowLabel" value="r5"></Radio>
-      </RadioGroup>
+      <RadioGroup
+        v-model="radioVal"
+        :checkedIndex="2"
+        :labelId="radioGroupLabel.id"
+        :labelText="radioGroupLabel.text"
+        :radios="radioInputAry"
+      />
     </div>
   </div>
 </template>
 
 <script>
 import RadioGroup from "./components/RadioGroup.vue";
-import Radio from "./components/Radio.vue";
 
 export default {
   name: "app",
   components: {
-    RadioGroup,
-    Radio
+    RadioGroup
   },
   data: function() {
     return {
-      radioVal: String
+      radioVal: String,
+      radioGroupLabel: {
+        id: "group_label",
+        text: "Pizza Crust"
+      },
+      radioInputAry: [
+        {
+          position: "afterLabel",
+          value: "r0",
+          label: "Regular crust",
+          disabled: true
+        },
+        {
+          position: "afterLabel",
+          value: "r1",
+          label: "Deep dish"
+        },
+        {
+          position: "beforeLabel",
+          value: "r2",
+          label: "Thin crust"
+        },
+        {
+          position: "belowLabel",
+          value: "r3",
+          label: "Stuffed crust"
+        },
+        {
+          position: "aboveLabel",
+          value: "r4",
+          label: "No crust"
+        }
+      ]
     };
   }
 };
