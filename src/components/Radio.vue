@@ -58,7 +58,8 @@ export default {
         UP: 38,
         RIGHT: 39,
         DOWN: 40
-      })
+      }),
+      initialCheck: false
     };
   },
   computed: {
@@ -72,6 +73,8 @@ export default {
         this.position
       ];
     },
+    // when no label is supplied, aria-label attribute is set on the radio
+    // to support web accessibility.
     radioAriaLabel: function() {
       return !this.label ? this.value : null;
     },
@@ -88,7 +91,9 @@ export default {
   watch: {
     checked: function() {
       if (this.radioIndex === this.checked) {
-        this.$el.focus();
+        if (!this.getInitialCheck()) {
+          this.$el.focus();
+        }
         this.$emit("check", { index: this.radioIndex, value: this.value });
       }
     }
@@ -96,6 +101,14 @@ export default {
   methods: {
     setRadioIndex: function(index) {
       this.radioIndex = index;
+    },
+    getInitialCheck() {
+      // required so that if the initial check is set on first load,
+      // we don't focus the radio
+      if (this.initialCheck) {
+        this.initialCheck = false;
+        return true;
+      }
     },
     handleFocus: function() {
       if (!this.classList.includes("focus")) {
@@ -119,12 +132,10 @@ export default {
         case this.keyCode.UP:
         case this.keyCode.LEFT:
           this.$emit("previous");
-          this.$el.blur();
           flag = true;
           break;
         case this.keyCode.DOWN:
         case this.keyCode.RIGHT:
-          this.$el.blur();
           this.$emit("next");
           flag = true;
           break;

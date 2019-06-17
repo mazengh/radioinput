@@ -33,9 +33,8 @@ let wrapper, props;
 describe("RadioGroup.vue rendering", () => {
   // test rendering with default(checkedIndex) set
   it("will render a radio group with 4 radios with default checked", () => {
-    let radioVal = null;
     props = {
-      ...createTestProps({ vModel: radioVal })
+      ...createTestProps()
     };
 
     wrapper = mount(RadioGroup, {
@@ -63,9 +62,8 @@ describe("RadioGroup.vue rendering", () => {
 
   // test rendering with no default(checkedIndex) set
   it("will render a radio group with 4 radios with none being checked", () => {
-    let radioVal = null;
     props = {
-      ...createTestProps({ vModel: radioVal, checkedIndex: -1 })
+      ...createTestProps({ checkedIndex: -1 })
     };
 
     wrapper = mount(RadioGroup, {
@@ -76,5 +74,27 @@ describe("RadioGroup.vue rendering", () => {
 
     // value of radiogroup should be null as no radio is checked
     expect(wrapper.vm.currentRadioValue).toBeNull();
+  });
+
+  // test custom v-model implementation
+  it("will get value from checked radio and set it to radio group value", () => {
+    let radioVal = props.radios[1].value;
+    props = {
+      ...createTestProps({ checkedIndex: -1 })
+    };
+
+    wrapper = mount(RadioGroup, {
+      propsData: {
+        ...props,
+        value: radioVal
+      }
+    });
+
+    // currentRadioValue of radio group should be set to value
+    expect(wrapper.vm.currentRadioValue).toBe(props.radios[1].value);
+
+    // the value set to the checked radio should equal the radio group value
+    const radio = wrapper.find('[role="radio"][aria-checked="true"]');
+    expect(radio.vm.value).toBe(props.radios[1].value);
   });
 });

@@ -45,7 +45,7 @@ export default {
   data: function() {
     return {
       currentRadioIndex: this.checkedIndex >= 0 ? this.checkedIndex : -1,
-      currentRadioValue: null,
+      currentRadioValue: this.value ? this.value : null,
       totalRadios: 0,
       radioLabelId: this.labelId,
       radioLabelText: this.labelText
@@ -80,6 +80,11 @@ export default {
       .filter(radioBtn => !radioBtn.isAriaDisabled)
       .forEach((radioBtn, index) => {
         radioBtn.setRadioIndex(index);
+        //initialize two way binding if value is set initially
+        if (this.value === radioBtn.value) {
+          this.$children[index].initialCheck = true;
+          this.currentRadioIndex = index;
+        }
       });
 
     // set value of radiogroup to default checked radio value
@@ -97,6 +102,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+$green-1: rgb(96, 161, 96);
+
 [role="radiogroup"] {
   padding: 0;
   margin: 0;
@@ -104,6 +111,11 @@ export default {
 
   &:focus {
     outline: none;
+  }
+
+  h3 {
+    color: $green-1;
+    margin: 0.5em;
   }
 }
 </style>
