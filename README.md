@@ -15,6 +15,7 @@ This component offers the below features
 - setting default checked radio
 - radio positioning (beforeLabel, afterLabel, aboveLabel, belowLabel)
 - supports no label radios by adding aria-label attribute when no label is set
+- supports setting radio to disabled
 
 ## Project setup
 
