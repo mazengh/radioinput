@@ -11,9 +11,9 @@ Radio Group Design Pattern using roving tabindex and supports web accessibility.
 
 This component offers the below features
 
-- v-model support
-- setting default checked radio
-- radio positioning (beforeLabel, afterLabel, aboveLabel, belowLabel)
+- supports v-model 
+- supports setting default checked radio
+- supports radio positioning (beforeLabel, afterLabel, aboveLabel, belowLabel)
 - supports no label radios by adding aria-label attribute when no label is set
 - supports setting radio to disabled
 
