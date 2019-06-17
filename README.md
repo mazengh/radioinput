@@ -6,8 +6,8 @@ Sample running demo at https://radioinput-de8f6.firebaseapp.com/
 
 ### About
 
-radioinput is a radio group component that implements the features pf the Radio Group Design Pattern
-using roving tabindex and supports web accessibility.
+radioinput is a radio group component that implements the features of the 
+Radio Group Design Pattern using roving tabindex and supports web accessibility.
 
 This component offers the below features
 
