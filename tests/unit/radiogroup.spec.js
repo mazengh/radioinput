@@ -76,6 +76,36 @@ describe("RadioGroup.vue rendering", () => {
     expect(wrapper.vm.currentRadioValue).toBeNull();
   });
 
+  // test rendering a radio group with a disabled radio
+  it("will render a radio group with 4 radios with none being checked", () => {
+    props = {
+      ...createTestProps({
+        radios: [
+          {
+            value: "r1",
+            label: "Regular Burger"
+          },
+          {
+            value: "r2",
+            label: "Cheese Burger",
+            disabled: true
+          }
+        ]
+      })
+    };
+
+    wrapper = mount(RadioGroup, {
+      propsData: {
+        ...props
+      }
+    });
+
+    const disabledRadio = wrapper.find('[role="radio"].disabled');
+
+    // disabled radio isAriaDisabled property should be true
+    expect(disabledRadio.vm.isAriaDisabled).toBeTruthy();
+  });
+
   // test custom v-model implementation
   it("will get value from checked radio and set it to radio group value", () => {
     let radioVal = props.radios[1].value;

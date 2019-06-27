@@ -6,6 +6,7 @@
       v-bind="radio"
       :key="`radio_${index}`"
       :checked="currentRadioIndex"
+      :index="indexInGroup(index)"
       @check="setChecked"
       @previous="setCheckedToPreviousItem"
       @next="setCheckedToNextItem"
@@ -48,7 +49,8 @@ export default {
       currentRadioValue: this.value ? this.value : null,
       totalRadios: 0,
       radioLabelId: this.labelId,
-      radioLabelText: this.labelText
+      radioLabelText: this.labelText,
+      radiosInGroup: Map
     };
   },
   methods: {
@@ -72,31 +74,49 @@ export default {
     },
     handleInput: function() {
       this.$emit("click", this.currentRadioValue);
+    },
+    indexInGroup(index) {
+      return this.radiosInGroup.get(index.toString());
     }
   },
-  mounted() {
-    // get all non disabled radios and set the index for each
-    this.$children
-      .filter(radioBtn => !radioBtn.isAriaDisabled)
-      .forEach((radioBtn, index) => {
-        radioBtn.setRadioIndex(index);
-        //initialize two way binding if value is set initially
-        if (this.value === radioBtn.value) {
-          this.$children[index].initialCheck = true;
-          this.currentRadioIndex = index;
-        }
-      });
+  created() {
+    // initialize the index of the active radios
+    // disabled radios index is set to null
+    // enabled radios are index by order starting at 0
+    this.radiosInGroup = new Map();
+    let radioIndex = 0;
+    this.radios.forEach((radio, index) => {
+      if (!radio.disabled) {
+        this.radiosInGroup.set(index.toString(), radioIndex++);
+      } else {
+        this.radiosInGroup.set(index.toString(), null);
+      }
+    });
+  },
+  beforeMount() {
+    const activeRadios = this.radios.filter(radio => !radio.disabled);
 
-    // set value of radiogroup to default checked radio value
-    if (this.checkedIndex >= 0) {
-      this.currentRadioValue = this.$children[this.checkedIndex].value;
-      this.handleInput();
-    }
+    activeRadios.forEach((radio, index) => {
+      // if the value of the radio group matched the value of the
+      // current radio, set the current active Radio index to the
+      // index of the radio
+      if (this.value === radio.value) {
+        this.currentRadioIndex = index;
+      }
+      // if no value is set on the radio group and the default
+      // checked index is set and it is equal to the radio index,
+      // set the current radio group value to the radio value
+      else if (
+        this.checkedIndex >= 0 &&
+        radio.value &&
+        this.checkedIndex === index
+      ) {
+        this.currentRadioValue = radio.value;
+        this.handleInput();
+      }
+    });
 
-    // set the total number of radios in group
-    this.totalRadios = this.$children.filter(
-      radioBtn => !radioBtn.isAriaDisabled
-    ).length;
+    this.totalRadios = activeRadios.length;
   }
 };
 </script>

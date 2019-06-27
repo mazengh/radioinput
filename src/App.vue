@@ -28,6 +28,7 @@
       <h4>Radio group with default checked radio</h4>
       <div>
         <RadioGroup
+          v-model="fruitsVal"
           :checkedIndex="2"
           :labelId="sampleData.fruits.groupLabel.id"
           :labelText="sampleData.fruits.groupLabel.text"
@@ -54,13 +55,13 @@
       <div>
         <div>
           <RadioGroup
-            v-model="radioVal"
+            v-model="colorVal"
             :labelId="sampleData.colors.groupLabel.id"
             :labelText="sampleData.colors.groupLabel.text"
             :radios="sampleData.colors.radios"
           />
         </div>
-        <div :style="{color: radioVal}">Selected color is {{radioVal}}</div>
+        <div :style="{color: colorVal}">Selected color is {{colorVal}}</div>
       </div>
     </section>
   </div>
@@ -78,7 +79,8 @@ export default {
   data: function() {
     return {
       pizzaCrustVal: "",
-      radioVal: "blue",
+      colorVal: "blue",
+      fruitsVal: "",
       sampleData
     };
   }

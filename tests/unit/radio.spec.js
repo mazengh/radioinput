@@ -94,19 +94,3 @@ describe("Radio.vue rendering", () => {
     expect(wrapper.classes()).toContain("aboveLabel");
   });
 });
-
-describe("Radio.vue setters", () => {
-  // test setter methods
-  it("checks if data is set", () => {
-    const value = "radio value";
-    const index = 3;
-
-    const wrapper = shallowMount(Radio, {
-      propsData: { value }
-    });
-
-    // setRadioIndex should set radioIndex data property value
-    wrapper.vm.setRadioIndex(index);
-    expect(wrapper.vm.radioIndex).toEqual(3);
-  });
-});

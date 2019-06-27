@@ -19,8 +19,12 @@
 export default {
   name: "Radio",
   props: {
-    checked: {
+    index: {
       type: Number
+    },
+    checked: {
+      type: Number,
+      default: -1
     },
     // position of radio input relative to it's label
     position: {
@@ -47,7 +51,7 @@ export default {
   },
   data: function() {
     return {
-      radioIndex: null,
+      radioIndex: this.index,
       radioLabel: this.label,
       isAriaDisabled: this.disabled,
       radioFocus: false,
@@ -58,8 +62,7 @@ export default {
         UP: 38,
         RIGHT: 39,
         DOWN: 40
-      }),
-      initialCheck: false
+      })
     };
   },
   computed: {
@@ -91,25 +94,12 @@ export default {
   watch: {
     checked: function() {
       if (this.radioIndex === this.checked) {
-        if (!this.getInitialCheck()) {
-          this.$el.focus();
-        }
+        this.$el.focus();
         this.$emit("check", { index: this.radioIndex, value: this.value });
       }
     }
   },
   methods: {
-    setRadioIndex: function(index) {
-      this.radioIndex = index;
-    },
-    getInitialCheck() {
-      // required so that if the initial check is set on first load,
-      // we don't focus the radio
-      if (this.initialCheck) {
-        this.initialCheck = false;
-        return true;
-      }
-    },
     handleFocus: function() {
       if (!this.classList.includes("focus")) {
         this.radioFocus = true;
