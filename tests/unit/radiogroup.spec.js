@@ -102,8 +102,8 @@ describe("RadioGroup.vue rendering", () => {
 
     const disabledRadio = wrapper.find('[role="radio"].disabled');
 
-    // disabled radio isAriaDisabled property should be true
-    expect(disabledRadio.vm.isAriaDisabled).toBeTruthy();
+    // radio disabled property should be true
+    expect(disabledRadio.vm.disabled).toBeTruthy();
   });
 
   // test custom v-model implementation

@@ -2,14 +2,14 @@
   <div
     role="radio"
     :aria-checked="radioAriaChecked"
-    :aria-disabled="isAriaDisabled"
+    :aria-disabled="disabled"
     :aria-label="radioAriaLabel"
     :tabindex="radioTabIndex"
     :class="classList"
-    @keydown="handleKeyDown"
-    @click="!isAriaDisabled && handleClick()"
-    @focus="!isAriaDisabled && handleFocus()"
-    @blur="!isAriaDisabled && handleBlur()"
+    @keydown.prevent.stop.up.down.left.right.space.enter="handleKeyDown"
+    @click="handleClick()"
+    @focus="handleFocus()"
+    @blur="handleBlur()"
   >
     <div v-if="label" class="label">{{ radioLabel }}</div>
   </div>
@@ -53,7 +53,6 @@ export default {
     return {
       radioIndex: this.index,
       radioLabel: this.label,
-      isAriaDisabled: this.disabled,
       radioFocus: false,
       keyCode: Object.freeze({
         RETURN: 13,
@@ -66,25 +65,25 @@ export default {
     };
   },
   computed: {
-    radioAriaChecked: function() {
+    radioAriaChecked() {
       return this.isAriaChecked ? "true" : "false";
     },
-    classList: function() {
+    classList() {
       return [
-        this.isAriaDisabled ? "disabled" : null,
+        this.disabled ? "disabled" : null,
         this.radioFocus ? "focus" : null,
         this.position
       ];
     },
     // when no label is supplied, aria-label attribute is set on the radio
     // to support web accessibility.
-    radioAriaLabel: function() {
+    radioAriaLabel() {
       return !this.label ? this.value : null;
     },
-    isAriaChecked: function() {
+    isAriaChecked() {
       return this.radioIndex === this.checked;
     },
-    radioTabIndex: function() {
+    radioTabIndex() {
       return this.radioIndex === this.checked ||
         (this.checked === -1 && this.radioIndex === 0)
         ? "0"
@@ -92,7 +91,7 @@ export default {
     }
   },
   watch: {
-    checked: function() {
+    checked() {
       if (this.radioIndex === this.checked) {
         this.$el.focus();
         this.$emit("check", { index: this.radioIndex, value: this.value });
@@ -100,49 +99,40 @@ export default {
     }
   },
   methods: {
-    handleFocus: function() {
-      if (!this.classList.includes("focus")) {
+    handleFocus() {
+      if (!this.disabled && !this.classList.includes("focus")) {
         this.radioFocus = true;
       }
     },
-    handleBlur: function() {
-      if (this.classList.includes("focus")) {
+    handleBlur() {
+      if (!this.disabled && this.classList.includes("focus")) {
         this.radioFocus = false;
       }
     },
-    handleKeyDown: function(event) {
-      let flag = false;
-
+    handleKeyDown(event) {
       switch (event.keyCode) {
         case this.keyCode.SPACE:
         case this.keyCode.RETURN:
           this.$emit("check", { index: this.radioIndex, value: this.value });
-          flag = true;
           break;
         case this.keyCode.UP:
         case this.keyCode.LEFT:
           this.$emit("previous");
-          flag = true;
           break;
         case this.keyCode.DOWN:
         case this.keyCode.RIGHT:
           this.$emit("next");
-          flag = true;
           break;
         default:
           break;
       }
-
-      if (flag) {
-        event.stopPropagation();
-        event.preventDefault();
-      }
     },
-    handleClick: function() {
-      this.$emit("check", {
-        index: this.radioIndex,
-        value: this.value
-      });
+    handleClick() {
+      !this.disabled &&
+        this.$emit("check", {
+          index: this.radioIndex,
+          value: this.value
+        });
     }
   }
 };
