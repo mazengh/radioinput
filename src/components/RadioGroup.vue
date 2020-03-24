@@ -1,6 +1,6 @@
 <template>
   <div role="radiogroup" :aria-labelledby="radioLabelId" @click="handleInput">
-    <h3 :id="radioLabelId">{{radioLabelText}}</h3>
+    <h3 :id="radioLabelId">{{ radioLabelText }}</h3>
     <Radio
       v-for="(radio, index) in radios"
       v-bind="radio"
@@ -122,7 +122,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-$green-1: rgb(96, 161, 96);
+$blue-1: midnightblue;
 
 [role="radiogroup"] {
   padding: 0;
@@ -134,7 +134,8 @@ $green-1: rgb(96, 161, 96);
   }
 
   h3 {
-    color: $green-1;
+    color: $blue-1;
+    font-size: calc(0.75rem + 0.4vmin);
     margin: 0.5em;
   }
 }
