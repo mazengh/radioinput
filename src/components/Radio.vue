@@ -1,4 +1,4 @@
-<template slot-scope="slotProps">
+<template>
   <div
     role="radio"
     :aria-checked="radioAriaChecked"

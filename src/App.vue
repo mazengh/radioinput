@@ -38,19 +38,6 @@
     </section>
 
     <section>
-      <h4>Radio group for radios with no labels</h4>
-      <div>
-        <div>
-          <RadioGroup
-            :labelId="sampleData.position.groupLabel.id"
-            :labelText="sampleData.position.groupLabel.text"
-            :radios="sampleData.position.radios"
-          />
-        </div>
-      </div>
-    </section>
-
-    <section>
       <h4>Radio group with v-model support</h4>
       <div>
         <div>
@@ -61,7 +48,20 @@
             :radios="sampleData.colors.radios"
           />
         </div>
-        <div :style="{color: colorVal}">Selected color is {{colorVal}}</div>
+        <div :style="{ color: colorVal }">Selected color is {{ colorVal }}</div>
+      </div>
+    </section>
+
+    <section>
+      <h4>Radio group for radios with no labels</h4>
+      <div>
+        <div>
+          <RadioGroup
+            :labelId="sampleData.position.groupLabel.id"
+            :labelText="sampleData.position.groupLabel.text"
+            :radios="sampleData.position.radios"
+          />
+        </div>
       </div>
     </section>
   </div>
@@ -100,30 +100,30 @@ section {
   align-items: center;
 
   &:not(:first-of-type) {
-    margin-top: 1em;
+    margin-top: 1rem;
   }
 
   &:last-child {
-    margin-bottom: 1.5em;
+    margin-bottom: 3rem;
   }
 
   h4 {
     text-align: center;
-    border: 5px solid #1c6ea4;
-    border-radius: 5px;
-    padding: 5px;
+    border: 0.25rem solid #1c6ea4;
+    border-radius: 0.25rem;
+    padding: 0.25rem;
   }
 }
 
 div.labelPositioning {
   display: flex;
   flex-direction: row;
-  min-width: 385px;
+  min-width: 24rem;
 
   div {
     display: flex;
     flex-direction: row;
-    margin: 0 20px;
+    margin: 0 1.25rem;
 
     &:nth-child(1) {
       [role="radiogroup"] {
